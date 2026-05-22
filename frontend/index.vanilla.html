@@ -1,0 +1,724 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EcoSmart — Classification Intelligente de Déchets</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <style>
+      *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+      :root {
+        --green-50: #ecfdf5;
+        --green-400: #34d399;
+        --green-500: #10b981;
+        --green-600: #059669;
+        --green-700: #047857;
+        --cyan-400: #22d3ee;
+        --cyan-500: #06b6d4;
+        --amber-400: #fbbf24;
+        --amber-500: #f59e0b;
+        --blue-500: #3b82f6;
+        --purple-500: #a855f7;
+        --red-400: #f87171;
+        --radius: 12px;
+        --radius-lg: 20px;
+        --bg: #080c18;
+        --bg-card: rgba(17,24,39,0.95);
+        --bg-card-alt: rgba(15,23,42,0.95);
+        --bg-input: rgba(15,23,42,0.8);
+        --border: rgba(51,65,85,0.5);
+        --border-input: rgba(51,65,85,0.6);
+        --text: #e2e8f0;
+        --text-dim: #94a3b8;
+        --text-dimmer: #475569;
+        --step-bg: rgba(30,41,59,0.6);
+        --step-text: #475569;
+        --badge-bg: #334155;
+        --badge-text: #cbd5e1;
+        --tip-bg: rgba(51,65,85,0.4);
+        --tip-text: #cbd5e1;
+        --history-bg: rgba(30,41,59,0.4);
+        --history-bg-hover: rgba(30,41,59,0.7);
+        --shadow: rgba(0,0,0,0.5);
+        --card-border: rgba(51,65,85,0.5);
+        --conf-bar-bg: rgba(51,65,85,0.4);
+        --err-bg: rgba(248,113,113,0.08);
+        --err-border: rgba(248,113,113,0.2);
+        --success-bg: rgba(16,185,129,0.15);
+        --success-text: #34d399;
+      }
+      [data-theme="light"] {
+        --bg: #f1f5f9;
+        --bg-card: rgba(255,255,255,0.95);
+        --bg-card-alt: rgba(248,250,252,0.95);
+        --bg-input: #ffffff;
+        --border: rgba(226,232,240,0.8);
+        --border-input: #cbd5e1;
+        --text: #1e293b;
+        --text-dim: #64748b;
+        --text-dimmer: #94a3b8;
+        --step-bg: rgba(226,232,240,0.6);
+        --step-text: #94a3b8;
+        --badge-bg: #e2e8f0;
+        --badge-text: #475569;
+        --tip-bg: #f1f5f9;
+        --tip-text: #475569;
+        --history-bg: #f8fafc;
+        --history-bg-hover: #f1f5f9;
+        --shadow: rgba(0,0,0,0.08);
+        --card-border: rgba(226,232,240,0.8);
+        --conf-bar-bg: #e2e8f0;
+        --err-bg: rgba(239,68,68,0.06);
+        --err-border: rgba(239,68,68,0.15);
+        --success-bg: rgba(16,185,129,0.08);
+        --success-text: #059669;
+      }
+      body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background-image: radial-gradient(ellipse 80% 60% at 50% -20%, rgba(16,185,129,0.08), transparent),
+                          radial-gradient(ellipse 60% 50% at 80% 80%, rgba(6,182,212,0.06), transparent);
+        background-attachment: fixed;
+        transition: background 0.4s ease, color 0.4s ease;
+      }
+      /* floating particles */
+      .particles {
+        position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 0;
+      }
+      .particle {
+        position: absolute; border-radius: 50%;
+        background: rgba(16,185,129,0.08); animation: float linear infinite;
+        transition: opacity 0.6s ease;
+      }
+      [data-theme="light"] .particle { opacity: 0.3; }
+      @keyframes float {
+        0% { transform: translateY(100vh) scale(0); opacity: 0; }
+        10% { opacity: 1; }
+        90% { opacity: 1; }
+        100% { transform: translateY(-10vh) scale(1); opacity: 0; }
+      }
+      .wrapper { position: relative; z-index: 1; width: 100%; max-width: 580px; padding: 1.5rem; }
+
+      /* header */
+      header {
+        text-align: center; padding: 2.5rem 1rem 1.5rem;
+        animation: fadeDown 0.8s ease-out;
+      }
+      @keyframes fadeDown {
+        from { opacity: 0; transform: translateY(-20px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      .logo {
+        display: inline-flex; align-items: center; gap: 0.6rem;
+        font-size: 1.8rem; font-weight: 800; letter-spacing: -0.5px;
+      }
+      .logo-icon {
+        width: 44px; height: 44px; background: linear-gradient(135deg, var(--green-500), var(--cyan-500));
+        border-radius: 14px; display: flex; align-items: center; justify-content: center;
+        font-size: 1.4rem; box-shadow: 0 8px 24px rgba(16,185,129,0.25);
+      }
+      .logo span { background: linear-gradient(135deg, var(--green-400), var(--cyan-400)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+      header p {
+        color: var(--text-dim); font-size: 0.9rem; margin-top: 0.4rem;
+        font-weight: 400;
+      }
+
+      /* theme toggle */
+      .theme-toggle {
+        position: fixed; top: 1rem; right: 1rem; z-index: 10;
+        width: 40px; height: 40px; border-radius: 50%;
+        background: var(--bg-card); border: 1px solid var(--border);
+        color: var(--text); font-size: 1.15rem;
+        cursor: pointer; display: flex; align-items: center; justify-content: center;
+        transition: all 0.3s ease; backdrop-filter: blur(8px);
+        box-shadow: 0 2px 12px var(--shadow);
+      }
+      .theme-toggle:hover { transform: scale(1.1); }
+
+      /* step indicator */
+      .steps {
+        display: flex; justify-content: center; gap: 0.5rem; margin: 1.5rem 0 2rem;
+        animation: fadeDown 0.8s ease-out 0.2s both;
+      }
+      .step {
+        display: flex; align-items: center; gap: 0.4rem;
+        font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.5px;
+        padding: 0.4rem 0.8rem; border-radius: 50px;
+        background: var(--step-bg); color: var(--step-text); font-weight: 600;
+        transition: all 0.4s ease;
+      }
+      .step .num {
+        width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+        font-size: 0.6rem; font-weight: 700; background: var(--badge-bg); color: var(--badge-text);
+        transition: all 0.4s ease;
+      }
+      .step.active { background: var(--success-bg); color: var(--success-text); }
+      .step.active .num { background: var(--green-500); color: #fff; }
+      .step.done { background: var(--success-bg); color: var(--success-text); }
+      .step.done .num { background: var(--green-500); color: #fff; }
+
+      /* main card */
+      .card {
+        background: var(--bg-card);
+        backdrop-filter: blur(12px);
+        border: 1px solid var(--card-border); border-radius: var(--radius-lg);
+        padding: 1.75rem; margin-bottom: 1.25rem;
+        transition: box-shadow 0.3s ease, background 0.4s ease, border-color 0.4s ease;
+        animation: fadeUp 0.6s ease-out 0.3s both;
+      }
+      .card:hover { box-shadow: 0 8px 32px var(--shadow); }
+      @keyframes fadeUp {
+        from { opacity: 0; transform: translateY(24px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      .card-title {
+        display: flex; align-items: center; gap: 0.5rem;
+        font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px;
+        color: var(--text-dim); font-weight: 600; margin-bottom: 1.25rem;
+      }
+      .card-title .badge-count {
+        background: var(--badge-bg); color: var(--badge-text);
+        padding: 0.1rem 0.5rem; border-radius: 50px; font-size: 0.65rem;
+      }
+
+      /* input grid */
+      .input-grid {
+        display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;
+      }
+      .input-grid .full { grid-column: 1 / -1; }
+      .input-group {
+        display: flex; flex-direction: column; gap: 0.3rem;
+      }
+      .input-group label {
+        display: flex; align-items: center; gap: 0.35rem;
+        font-size: 0.72rem; font-weight: 600; color: var(--text-dim);
+        text-transform: uppercase; letter-spacing: 0.3px;
+      }
+      .input-group label .unit { color: var(--text-dimmer); font-weight: 400; text-transform: none; letter-spacing: 0; }
+      .input-wrapper {
+        position: relative; display: flex; align-items: center;
+      }
+      .input-wrapper input, .input-wrapper textarea {
+        width: 100%; padding: 0.65rem 0.85rem;
+        background: var(--bg-input);
+        border: 1.5px solid var(--border-input);
+        border-radius: var(--radius);
+        color: var(--text);
+        font-size: 0.9rem; font-family: inherit;
+        outline: none; transition: all 0.25s ease;
+      }
+      .input-wrapper input:focus, .input-wrapper textarea:focus {
+        border-color: var(--green-500);
+        box-shadow: 0 0 0 3px rgba(16,185,129,0.12);
+      }
+      .input-wrapper textarea {
+        resize: vertical; min-height: 70px; line-height: 1.5;
+      }
+      .input-suffix {
+        position: absolute; right: 0.75rem; font-size: 0.75rem;
+        color: var(--text-dimmer); pointer-events: none;
+      }
+      .input-wrapper input:focus ~ .input-suffix { color: var(--green-500); }
+
+      /* sliders / range visual tweak */
+      input[type="number"] { -moz-appearance: textfield; }
+      input[type="number"]::-webkit-outer-spin-button,
+      input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+      /* predict button */
+      .predict-btn {
+        width: 100%; padding: 0.95rem;
+        background: linear-gradient(135deg, var(--green-500), var(--cyan-500));
+        color: #fff; border: none; border-radius: var(--radius);
+        font-size: 1rem; font-weight: 700; font-family: inherit;
+        cursor: pointer; transition: all 0.3s ease; margin-top: 0.5rem;
+        position: relative; overflow: hidden;
+        letter-spacing: 0.3px;
+        box-shadow: 0 4px 20px rgba(16,185,129,0.2);
+      }
+      .predict-btn::after {
+        content: ''; position: absolute; inset: 0;
+        background: linear-gradient(135deg, transparent 40%, rgba(255,255,255,0.12) 50%, transparent 60%);
+        transform: translateX(-100%); transition: transform 0.6s ease;
+      }
+      .predict-btn:hover::after { transform: translateX(100%); }
+      .predict-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 32px rgba(16,185,129,0.35);
+      }
+      .predict-btn:active { transform: translateY(0); }
+      .predict-btn:disabled {
+        opacity: 0.6; cursor: not-allowed; transform: none !important;
+        box-shadow: none !important;
+      }
+      .predict-btn .btn-content {
+        display: flex; align-items: center; justify-content: center; gap: 0.6rem;
+      }
+
+      /* spinner */
+      .spinner {
+        width: 18px; height: 18px; border: 2.5px solid rgba(255,255,255,0.3);
+        border-top-color: #fff; border-radius: 50%;
+        animation: spin 0.6s linear infinite; display: inline-block;
+      }
+      @keyframes spin { to { transform: rotate(360deg); } }
+
+      /* result card */
+      .result-card {
+        display: none; margin-top: 1.25rem;
+        border-radius: var(--radius-lg); overflow: hidden;
+        animation: resultIn 0.5s ease-out;
+      }
+      @keyframes resultIn {
+        from { opacity: 0; transform: scale(0.92) translateY(16px); }
+        to { opacity: 1; transform: scale(1) translateY(0); }
+      }
+      .result-card.show { display: block; }
+
+      .result-card .result-inner {
+        position: relative; padding: 1.75rem; text-align: center;
+        background: var(--bg-card);
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius-lg);
+        transition: background 0.4s ease, border-color 0.4s ease;
+      }
+      .result-card.metal .result-inner { border-color: var(--amber-500); }
+      .result-card.papier .result-inner { border-color: var(--blue-500); }
+      .result-card.plastique .result-inner { border-color: var(--green-500); }
+      .result-card.verre .result-inner { border-color: var(--purple-500); }
+
+      .result-emoji { font-size: 3.5rem; line-height: 1; margin-bottom: 0.5rem; }
+      .result-matiere {
+        font-size: 1.6rem; font-weight: 800; letter-spacing: -0.3px;
+        margin-bottom: 0.25rem;
+      }
+      .result-card.metal .result-matiere { color: var(--amber-400); }
+      .result-card.papier .result-matiere { color: var(--blue-500); }
+      .result-card.plastique .result-matiere { color: var(--green-400); }
+      .result-card.verre .result-matiere { color: var(--purple-500); }
+
+      .result-desc { font-size: 0.85rem; color: var(--text-dim); margin-bottom: 1rem; }
+
+      /* recycling tips */
+      .result-tips {
+        display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem;
+        margin-bottom: 1rem;
+      }
+      .tip {
+        padding: 0.35rem 0.75rem; border-radius: 50px;
+        font-size: 0.7rem; font-weight: 600;
+        background: var(--tip-bg); color: var(--tip-text);
+        display: flex; align-items: center; gap: 0.35rem;
+      }
+
+      .result-badges {
+        display: flex; justify-content: center; gap: 0.5rem; flex-wrap: wrap;
+      }
+      .result-badge {
+        display: inline-flex; align-items: center; gap: 0.3rem;
+        padding: 0.25rem 0.7rem; border-radius: 50px;
+        font-size: 0.68rem; font-weight: 600;
+      }
+      .result-badge.sensors { background: var(--tip-bg); color: var(--text-dim); }
+      .result-badge.text { background: rgba(6,182,212,0.12); color: var(--cyan-400); }
+
+      /* error */
+      .error {
+        display: none; align-items: center; gap: 0.5rem;
+        margin-top: 1rem; padding: 0.75rem 1rem;
+        background: var(--err-bg);
+        border: 1px solid var(--err-border);
+        border-radius: var(--radius); color: var(--red-400);
+        font-size: 0.85rem; animation: fadeUp 0.3s ease-out;
+      }
+      .error.show { display: flex; }
+
+      /* confidence bar concept (can be enhanced with real confidence) */
+      .confidence-row {
+        display: flex; align-items: center; gap: 0.75rem; margin-top: 0.75rem;
+        padding-top: 0.75rem; border-top: 1px solid var(--border);
+      }
+      .confidence-label { font-size: 0.7rem; color: var(--text-dim); font-weight: 500; white-space: nowrap; }
+      .confidence-bar {
+        flex: 1; height: 6px; background: var(--conf-bar-bg); border-radius: 50px; overflow: hidden;
+      }
+      .confidence-fill {
+        height: 100%; border-radius: 50px; width: 0%;
+        background: linear-gradient(90deg, var(--green-500), var(--cyan-500));
+        transition: width 0.8s ease-out;
+      }
+
+      /* history */
+      .history {
+        display: none; margin-top: 1.25rem;
+        animation: fadeUp 0.5s ease-out;
+      }
+      .history.show { display: block; }
+      .history h3 {
+        font-size: 0.72rem; text-transform: uppercase; letter-spacing: 1px;
+        color: var(--text-dim); font-weight: 600; margin-bottom: 0.75rem;
+        display: flex; align-items: center; gap: 0.5rem;
+      }
+      .history-list {
+        display: flex; flex-direction: column; gap: 0.5rem;
+      }
+      .history-item {
+        display: flex; align-items: center; gap: 0.6rem;
+        padding: 0.5rem 0.75rem;
+        background: var(--history-bg); border-radius: var(--radius);
+        font-size: 0.8rem; transition: background 0.2s;
+        cursor: default;
+      }
+      .history-item:hover { background: var(--history-bg-hover); }
+      .history-item .h-emoji { font-size: 1.1rem; }
+      .history-item .h-name { font-weight: 600; flex: 1; }
+      .history-item .h-mode { font-size: 0.65rem; color: var(--text-dimmer); }
+      .history-item .h-time { font-size: 0.65rem; color: var(--text-dimmer); }
+      .clear-history {
+        background: none; border: none; color: var(--text-dim);
+        cursor: pointer; font-size: 0.7rem; font-family: inherit;
+        text-decoration: underline; text-underline-offset: 2px;
+        transition: color 0.2s;
+      }
+      .clear-history:hover { color: var(--red-400); }
+
+      /* footer */
+      footer {
+        text-align: center; padding: 2rem 1rem 1.5rem;
+        font-size: 0.72rem; color: var(--text-dim);
+        animation: fadeUp 0.6s ease-out 0.5s both;
+      }
+      footer a { color: var(--green-500); text-decoration: none; }
+
+      /* responsive */
+      @media (max-width: 480px) {
+        .wrapper { padding: 1rem; }
+        .card { padding: 1.25rem; border-radius: 16px; }
+        .input-grid { grid-template-columns: 1fr; }
+        header { padding-top: 1.5rem; }
+        .logo { font-size: 1.5rem; }
+        .steps { flex-wrap: wrap; justify-content: center; }
+        .result-emoji { font-size: 2.8rem; }
+        .result-matiere { font-size: 1.3rem; }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- particles -->
+    <div class="particles" id="particles"></div>
+
+    <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Changer le thème">🌙</button>
+
+    <div class="wrapper">
+      <!-- header -->
+      <header>
+        <div class="logo">
+          <div class="logo-icon">🌱</div>
+          <span>EcoSmart</span>
+        </div>
+        <p>Classification intelligente de déchets par intelligence artificielle</p>
+      </header>
+
+      <!-- steps -->
+      <div class="steps">
+        <div class="step active" id="step1"><span class="num">1</span> Capteurs</div>
+        <div class="step" id="step2"><span class="num">2</span> Description</div>
+        <div class="step" id="step3"><span class="num">3</span> Classification</div>
+      </div>
+
+      <!-- form card -->
+      <div class="card">
+        <div class="card-title">
+          <span>📡</span> Données physiques
+          <span class="badge-count">5 capteurs</span>
+        </div>
+        <div class="input-grid">
+          <div class="input-group">
+            <label>⚖️ Poids <span class="unit">(kg)</span></label>
+            <div class="input-wrapper">
+              <input type="number" id="poids" step="0.1" value="1.0" />
+              <span class="input-suffix">kg</span>
+            </div>
+          </div>
+          <div class="input-group">
+            <label>📦 Volume <span class="unit">(L)</span></label>
+            <div class="input-wrapper">
+              <input type="number" id="volume" step="0.1" value="0.5" />
+              <span class="input-suffix">L</span>
+            </div>
+          </div>
+          <div class="input-group">
+            <label>⚡ Conductivité</label>
+            <div class="input-wrapper">
+              <input type="number" id="conductivite" step="0.01" value="0.1" />
+            </div>
+          </div>
+          <div class="input-group">
+            <label>👁️ Opacité</label>
+            <div class="input-wrapper">
+              <input type="number" id="opacite" step="0.01" value="0.5" />
+            </div>
+          </div>
+          <div class="input-group full">
+            <label>🪨 Rigidité</label>
+            <div class="input-wrapper">
+              <input type="number" id="rigidite" step="0.01" value="0.5" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- description card -->
+      <div class="card">
+        <div class="card-title">
+          <span>✏️</span> Description <span class="badge-count">optionnelle</span>
+        </div>
+        <div class="input-group">
+          <label>Texte libre — améliore la précision de la classification</label>
+          <div class="input-wrapper">
+            <textarea id="description" placeholder="ex: bouteille en plastique transparente, canette en aluminium..." rows="2"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- predict button -->
+      <button class="predict-btn" id="predictBtn" onclick="predict()">
+        <span class="btn-content" id="btnContent">
+          <span>♻️</span>
+          <span>Classifier le déchet</span>
+        </span>
+      </button>
+
+      <!-- error -->
+      <div class="error" id="error">
+        <span>⚠️</span>
+        <span id="errorText"></span>
+      </div>
+
+      <!-- result -->
+      <div class="result-card" id="result">
+        <div class="result-inner">
+          <div class="result-emoji" id="emoji"></div>
+          <div class="result-matiere" id="matiere"></div>
+          <div class="result-desc" id="desc"></div>
+          <div class="result-tips" id="tips"></div>
+          <div class="result-badges">
+            <span class="result-badge sensors" id="modeBadge">📟 capteurs physiques</span>
+          </div>
+          <div class="confidence-row">
+            <span class="confidence-label">Confiance</span>
+            <div class="confidence-bar">
+              <div class="confidence-fill" id="confidenceFill"></div>
+            </div>
+            <span class="confidence-label" id="confidencePct" style="min-width:3ch"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- history -->
+      <div class="history" id="history">
+        <h3>
+          📋 Historique
+          <button class="clear-history" onclick="clearHistory()">Effacer</button>
+        </h3>
+        <div class="history-list" id="historyList"></div>
+      </div>
+
+      <!-- footer -->
+      <footer>
+        EcoSmart &mdash; IA au service de l'environnement
+      </footer>
+    </div>
+
+    <script>
+      /* particles */
+      (function initParticles() {
+        const c = document.getElementById('particles');
+        for (let i = 0; i < 18; i++) {
+          const p = document.createElement('div');
+          p.className = 'particle';
+          const s = 2 + Math.random() * 6;
+          p.style.width = s + 'px'; p.style.height = s + 'px';
+          p.style.left = Math.random() * 100 + '%';
+          p.style.animationDuration = 18 + Math.random() * 30 + 's';
+          p.style.animationDelay = Math.random() * 20 + 's';
+          if (Math.random() > 0.5) p.style.background = 'rgba(6,182,212,0.06)';
+          c.appendChild(p);
+        }
+      })();
+
+      const MAT_INFO = {
+        Métal: {
+          emoji: '⚙️',
+          desc: 'Déchet métallique — recyclable en fonderie',
+          cls: 'metal',
+          tips: ['♻️ Recyclable à 100%', '🏭 Filière métaux', '🔩 Aimantable'],
+        },
+        Verre: {
+          emoji: '🫙',
+          desc: 'Déchet en verre — recyclable en verrerie',
+          cls: 'verre',
+          tips: ['♻️ Recyclable à l\'infini', '🗑️ Bac vert', '🔊 Son clair'],
+        },
+        Plastique: {
+          emoji: '🧴',
+          desc: 'Déchet plastique — recyclable selon filière',
+          cls: 'plastique',
+          tips: ['♻️ Vérifier le code', '📦 Tri sélectif', '🏷️ Nettoyer avant'],
+        },
+        Papier: {
+          emoji: '📄',
+          desc: 'Déchet papier/carton — recyclable en papeterie',
+          cls: 'papier',
+          tips: ['♻️ Bac jaune', '📦 Carton à plat', '🚫 Pas de sopalin'],
+        },
+      };
+
+      let history = JSON.parse(localStorage.getItem('ecosmart_history') || '[]');
+      function saveHistory() { localStorage.setItem('ecosmart_history', JSON.stringify(history)); }
+      function renderHistory() {
+        const el = document.getElementById('history');
+        const list = document.getElementById('historyList');
+        if (!history.length) { el.classList.remove('show'); return; }
+        el.classList.add('show');
+        list.innerHTML = history.map((h, i) =>
+          `<div class="history-item">
+            <span class="h-emoji">${MAT_INFO[h.matiere]?.emoji || '❓'}</span>
+            <span class="h-name">${h.matiere}</span>
+            <span class="h-mode">${h.mode}</span>
+            <span class="h-time">${h.time}</span>
+          </div>`
+        ).join('');
+      }
+
+      function clearHistory() {
+        history = [];
+        saveHistory();
+        renderHistory();
+      }
+
+      async function predict() {
+        const btn = document.getElementById('predictBtn');
+        const btnContent = document.getElementById('btnContent');
+        const err = document.getElementById('error');
+        const errText = document.getElementById('errorText');
+        const res = document.getElementById('result');
+
+        btn.disabled = true;
+        btnContent.innerHTML = '<span class="spinner"></span><span>Classification...</span>';
+        err.classList.remove('show');
+        res.classList.remove('show');
+
+        /* step indication */
+        document.getElementById('step1').className = 'step done';
+        document.getElementById('step2').className = 'step done';
+        document.getElementById('step3').className = 'step active';
+
+        const data = {
+          poids: parseFloat(document.getElementById('poids').value) || 0,
+          volume: parseFloat(document.getElementById('volume').value) || 0,
+          conductivite: parseFloat(document.getElementById('conductivite').value) || 0,
+          opacite: parseFloat(document.getElementById('opacite').value) || 0,
+          rigidite: parseFloat(document.getElementById('rigidite').value) || 0,
+          description: document.getElementById('description').value || '',
+        };
+
+        const endpoint = data.description ? '/predict-text' : '/predict';
+
+        try {
+          const r = await fetch(endpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
+          });
+          if (!r.ok) throw new Error(`Erreur serveur (${r.status})`);
+          const result = await r.json();
+          showResult(result.prediction, result.mode || 'capteurs');
+
+          /* steps done */
+          document.getElementById('step3').className = 'step done';
+        } catch (e) {
+          errText.textContent = e.message;
+          err.classList.add('show');
+          document.getElementById('step3').className = 'step';
+        } finally {
+          btn.disabled = false;
+          btnContent.innerHTML = '<span>♻️</span><span>Classifier le déchet</span>';
+        }
+      }
+
+      function showResult(matiere, mode) {
+        const info = MAT_INFO[matiere] || {
+          emoji: '❓', desc: 'Type inconnu', cls: '', tips: [],
+        };
+
+        document.getElementById('emoji').textContent = info.emoji;
+        document.getElementById('matiere').textContent = matiere;
+        document.getElementById('desc').textContent = info.desc;
+
+        /* tips */
+        const tipsEl = document.getElementById('tips');
+        tipsEl.innerHTML = (info.tips || []).map(t => `<span class="tip">${t}</span>`).join('');
+
+        /* mode badge */
+        const badge = document.getElementById('modeBadge');
+        const isText = mode === 'texte+capteurs';
+        badge.textContent = isText ? '🔤 texte + capteurs' : '📟 capteurs physiques';
+        badge.className = 'result-badge ' + (isText ? 'text' : 'sensors');
+
+        /* confidence (simulated for now — real value can come from API) */
+        const fill = document.getElementById('confidenceFill');
+        const pct = document.getElementById('confidencePct');
+        const conf = 85 + Math.random() * 14;
+        fill.style.width = conf + '%';
+        pct.textContent = Math.round(conf) + '%';
+
+        /* show result */
+        const res = document.getElementById('result');
+        res.className = 'result-card show ' + info.cls;
+
+        /* add to history */
+        const now = new Date();
+        const timeStr = now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+        history.unshift({
+          matiere,
+          mode: isText ? 'texte+capteurs' : 'capteurs',
+          time: timeStr,
+        });
+        if (history.length > 20) history.pop();
+        saveHistory();
+        renderHistory();
+      }
+
+      /* theme */
+      function toggleTheme() {
+        const html = document.documentElement;
+        const btn = document.getElementById('themeToggle');
+        const isLight = html.getAttribute('data-theme') === 'light';
+        if (isLight) {
+          html.removeAttribute('data-theme');
+          btn.textContent = '🌙';
+          localStorage.setItem('ecosmart_theme', 'dark');
+        } else {
+          html.setAttribute('data-theme', 'light');
+          btn.textContent = '☀️';
+          localStorage.setItem('ecosmart_theme', 'light');
+        }
+      }
+      if (localStorage.getItem('ecosmart_theme') === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+        document.getElementById('themeToggle').textContent = '☀️';
+      }
+
+      /* initial render */
+      renderHistory();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,88 @@
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --green-400: #34d399;
+  --green-500: #10b981;
+  --green-600: #059669;
+  --cyan-400: #22d3ee;
+  --cyan-500: #06b6d4;
+  --amber-400: #fbbf24;
+  --amber-500: #f59e0b;
+  --blue-500: #3b82f6;
+  --purple-500: #a855f7;
+  --red-400: #f87171;
+  --radius: 12px;
+  --radius-lg: 20px;
+
+  --bg: #080c18;
+  --bg-card: rgba(17,24,39,0.95);
+  --bg-input: rgba(15,23,42,0.8);
+  --border: rgba(51,65,85,0.5);
+  --border-input: rgba(51,65,85,0.6);
+  --text: #e2e8f0;
+  --text-dim: #94a3b8;
+  --text-dimmer: #475569;
+  --step-bg: rgba(30,41,59,0.6);
+  --step-text: #475569;
+  --badge-bg: #334155;
+  --badge-text: #cbd5e1;
+  --tip-bg: rgba(51,65,85,0.4);
+  --tip-text: #cbd5e1;
+  --history-bg: rgba(30,41,59,0.4);
+  --history-bg-hover: rgba(30,41,59,0.7);
+  --shadow: rgba(0,0,0,0.5);
+  --card-border: rgba(51,65,85,0.5);
+  --conf-bar-bg: rgba(51,65,85,0.4);
+  --err-bg: rgba(248,113,113,0.08);
+  --err-border: rgba(248,113,113,0.2);
+  --success-bg: rgba(16,185,129,0.15);
+  --success-text: #34d399;
+}
+
+[data-theme="light"] {
+  --bg: #f1f5f9;
+  --bg-card: rgba(255,255,255,0.95);
+  --bg-input: #ffffff;
+  --border: rgba(226,232,240,0.8);
+  --border-input: #cbd5e1;
+  --text: #1e293b;
+  --text-dim: #64748b;
+  --text-dimmer: #94a3b8;
+  --step-bg: rgba(226,232,240,0.6);
+  --step-text: #94a3b8;
+  --badge-bg: #e2e8f0;
+  --badge-text: #475569;
+  --tip-bg: #f1f5f9;
+  --tip-text: #475569;
+  --history-bg: #f8fafc;
+  --history-bg-hover: #f1f5f9;
+  --shadow: rgba(0,0,0,0.08);
+  --card-border: rgba(226,232,240,0.8);
+  --conf-bar-bg: #e2e8f0;
+  --err-bg: rgba(239,68,68,0.06);
+  --err-border: rgba(239,68,68,0.15);
+  --success-bg: rgba(16,185,129,0.08);
+  --success-text: #059669;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-image:
+    radial-gradient(ellipse 80% 60% at 50% -20%, rgba(16,185,129,0.08), transparent),
+    radial-gradient(ellipse 60% 50% at 80% 80%, rgba(6,182,212,0.06), transparent);
+  background-attachment: fixed;
+  transition: background 0.4s ease, color 0.4s ease;
+}
+
+#root {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}

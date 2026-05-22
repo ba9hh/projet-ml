@@ -1,0 +1,11 @@
+.venv/
+backend/venv/
+frontend/node_modules/
+frontend/src/
+frontend/public/
+frontend/vite.config.js
+frontend/package.json
+frontend/package-lock.json
+**/__pycache__/
+**/.git
+**/.gitignore
