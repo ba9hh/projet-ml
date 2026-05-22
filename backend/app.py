@@ -127,4 +127,4 @@ def predict_nlp(data: NLPInput):
 
     return {"prediction": best, "mode": "nlp", "prix_revente": None}
 
-app.mount("/", StaticFiles(directory="../frontend/dist", html=True), name="frontend")
+app.mount("/", StaticFiles(directory="./frontend/dist", html=True), name="frontend")
